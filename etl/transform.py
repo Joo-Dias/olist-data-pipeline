@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from extract import extract
+from etl.extract import extract
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROCESSED_PATH = os.path.join(BASE_DIR, "data", "processed")
