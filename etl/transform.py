@@ -35,10 +35,22 @@ def transform():
         orders["order_purchase_timestamp"]
     )
 
-    dim_time = orders[["order_purchase_timestamp"]].drop_duplicates()
-    dim_time["year"] = dim_time["order_purchase_timestamp"].dt.year
-    dim_time["month"] = dim_time["order_purchase_timestamp"].dt.month
-    dim_time["day"] = dim_time["order_purchase_timestamp"].dt.day
+    dim_time = (
+        orders[["order_purchase_timestamp"]]
+        .drop_duplicates()
+        .rename(columns={"order_purchase_timestamp": "date"})
+    )
+
+    dim_time["year"] = dim_time["date"].dt.year
+    dim_time["month"] = dim_time["date"].dt.month
+    dim_time["month_name"] = dim_time["date"].dt.month_name(locale="pt_BR")
+    dim_time["day"] = dim_time["date"].dt.day
+
+    dim_time["year_month"] = dim_time["date"].dt.strftime("%Y-%m")
+    dim_time["quarter"] = dim_time["date"].dt.to_period("Q").astype(str)
+
+    # Ordenação de datas
+    dim_time = dim_time.sort_values("date")
 
     # FACT SALES
     fact_sales = (
